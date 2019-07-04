@@ -402,3 +402,23 @@ export const setTitle = (routeItem, vm) => {
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
 }
+/**
+ * 判断字符串非空、非null、非undefined
+ * @param {*} data
+ */
+export const notNull = (data) => {
+  let returnData
+  if (typeof data === 'object' && Object.prototype.toString.call(data) !== '[object Array]') {
+    let aa = JSON.stringify(data)
+    returnData = aa !== '{}'
+  } else if (Object.prototype.toString.call(data) === '[object Array]') {
+    returnData = data.length !== 0
+  } else {
+    if (data !== undefined && data != null && data !== '') {
+      returnData = true
+    } else {
+      returnData = false
+    }
+  }
+  return returnData
+}

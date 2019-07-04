@@ -3,7 +3,7 @@ import url from '../config/url'
 // import store from '../store'
 export const login = ({ userName, password }) => {
   const data = {
-    userName: userName,
+    username: userName,
     password: password
   }
   // console.log(store.state.user.token)
@@ -20,7 +20,7 @@ export const getUserInfo = (token) => {
     params: {
       token
     },
-    method: 'get'
+    method: 'post'
   })
 }
 

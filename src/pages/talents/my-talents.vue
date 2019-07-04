@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns" @on-delete="handleDelete"/>
+      <tables ref="tables"  border editable searchable search-place="top" v-model="tableData" :columns="columns" @on-delete="handleDelete"/>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
     </Card>
   </div>
@@ -18,14 +18,24 @@ export default {
   data () {
     return {
       columns: [
-        { title: '姓名', key: 'name', sortable: true },
-        { title: '城市', key: 'city', sortable: true },
-        { title: '邮箱', key: 'email', editable: true },
-        { title: '最后约访时间', key: 'createTime' },
+        { type: 'selection', width: 40, align: 'center', fixed: 'left' },
+        { title: 'id', key: 'id', width: 90, sortable: true, fixed: 'left' },
+        { title: '姓名', key: 'name', width: 90, sortable: true, fixed: 'left' },
+        { title: '性别', key: 'sex', width: 70 },
+        { title: '电话', key: 'phone', width: 130 },
+        { title: '备用手机', key: 'backup_phone' },
+        { title: '在职企业', key: 'customer_short_name' },
+        { title: '工作状态', key: 'work_status' },
+        { title: '期望工作', key: 'want_job' },
+        { title: '最后约访', key: 'last_interview_time' },
+        { title: '所属人', key: 'user_id' },
+        { title: '中介人', key: 'agency' },
+        { title: '约访记录', key: 'last_interview_content' },
+        { title: '添加个人时间', key: 'add_individual_time' },
         {
           title: '编辑',
           key: 'handle',
-          options: ['delete'],
+          // options: ['delete'],
           button: [
             (h, params, vm) => {
               return h('Poptip', {
@@ -41,7 +51,7 @@ export default {
                   }
                 }
               }, [
-                h('Button', '自定义删除')
+                h('Button', '删除')
               ])
             }
           ]
@@ -63,7 +73,7 @@ export default {
   mounted () {
     myTalentsPage().then(res => {
       console.log(res.data)
-      this.tableData = res.data
+      this.tableData = res.data.data
     })
   }
 }

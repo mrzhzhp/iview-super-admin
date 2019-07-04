@@ -4,13 +4,17 @@ import { Message } from 'iview'
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '../config'
-const { title, cookieExpires, useI18n } = config
-import { TOKEN_KEY } from './util' // iview库的消息提示，可以不用
+import { notNull } from './util'
+const { cookieExpires } = config
+// import { TOKEN_KEY } from './util' // iview库的消息提示，可以不用
 // import API from '@/api/index'
 // import Qs from 'qs'
 // import Vue from 'vue'
 // import Cookie from 'vue-cookies'
 // import { Spin } from 'iview'
+
+// 开启cookie
+axios.defaults.withCredentials = true
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -32,14 +36,6 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         'content-type': 'application/json'
-        //  "loginToken": Cookie.get("uid"),
-        //  "loginType": 'pc'
-      },
-      data: {
-        // loginToken: store.state.user.token !== undefined ? store.state.user.token : '',
-        loginType: 'web',
-        // ip: localStorage.getItem('Ip'),
-        device: window.navigator.userAgent
       }
     }
     return config
@@ -55,6 +51,15 @@ class HttpRequest {
     instance.interceptors.request.use(config => {
       console.log('发送')
       console.log(config)
+      if (!notNull(config.data)) {
+        config['data'] = {}
+      }
+      config.data.other = {
+        token: notNull(Cookies.get('token')) ? Cookies.get('token') : '',
+        loginType: 'web',
+        // ip: localStorage.getItem('Ip'),
+        device: window.navigator.userAgent
+      }
       // 添加全局的loading...
       if (!Object.keys(this.queue).length) {
         // Spin.show() // 不建议开启，因为界面不友好
@@ -85,7 +90,7 @@ class HttpRequest {
             console.log('请重新登录')
           }
           Cookies.set('token', '', { expires: cookieExpires || 1 })
-          self.location.href = document.domain
+          // self.location.href = document.domain
           return false
           // eslint-disable-next-line eqeqeq
         } else if (res.data.code == 2) {
@@ -121,7 +126,7 @@ class HttpRequest {
     })
   }
   request (options) {
-    console.log(options)
+    // console.log(options)
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)
