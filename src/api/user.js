@@ -3,8 +3,8 @@ import url from '../config/url'
 // import store from '../store'
 export const login = ({ userName, password }) => {
   const data = {
-    userName,
-    password
+    userName: userName,
+    password: password
   }
   // console.log(store.state.user.token)
   return axios.request({

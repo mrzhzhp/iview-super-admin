@@ -7,15 +7,15 @@ const { title, cookieExpires, useI18n } = config
 
 export const TOKEN_KEY = 'token'
 
-export const setToken = (token, _this) => {
+export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
-  console.log(_this.$store.state.user)
-  // this.store.commit('setUserId', 12345)
+  // console.log(_this.$store.state.user)
+  // _this.$store.commit('setToken', '')
 }
 
-export const getToken = (store) => {
-  // const token = Cookies.get(TOKEN_KEY)
-  const token = store.state.user.token
+export const getToken = () => {
+  const token = Cookies.get(TOKEN_KEY)
+  // const token = store.state.user.token
   // console.log(token2)
   if (token) return token
   else return false

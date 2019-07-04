@@ -9,7 +9,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getTableData } from '@/api/data'
+import { myTalentsPage } from '../../api/talents'
 export default {
   name: 'tables_page',
   components: {
@@ -18,11 +18,12 @@ export default {
   data () {
     return {
       columns: [
-        { title: 'Name', key: 'name', sortable: true },
-        { title: 'Email', key: 'email', editable: true },
-        { title: 'Create-Time', key: 'createTime' },
+        { title: '姓名', key: 'name', sortable: true },
+        { title: '城市', key: 'city', sortable: true },
+        { title: '邮箱', key: 'email', editable: true },
+        { title: '最后约访时间', key: 'createTime' },
         {
-          title: 'Handle',
+          title: '编辑',
           key: 'handle',
           options: ['delete'],
           button: [
@@ -30,6 +31,7 @@ export default {
               return h('Poptip', {
                 props: {
                   confirm: true,
+                  transfer: true,
                   title: '你确定要删除吗?'
                 },
                 on: {
@@ -59,7 +61,8 @@ export default {
     }
   },
   mounted () {
-    getTableData().then(res => {
+    myTalentsPage().then(res => {
+      console.log(res.data)
       this.tableData = res.data
     })
   }

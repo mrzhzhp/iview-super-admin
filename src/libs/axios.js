@@ -1,6 +1,11 @@
 import axios from 'axios'
 import store from '@/store'
-import { Message } from 'iview' // iview库的消息提示，可以不用
+import { Message } from 'iview'
+import Cookies from 'js-cookie'
+// cookie保存的天数
+import config from '../config'
+const { title, cookieExpires, useI18n } = config
+import { TOKEN_KEY } from './util' // iview库的消息提示，可以不用
 // import API from '@/api/index'
 // import Qs from 'qs'
 // import Vue from 'vue'
@@ -79,8 +84,8 @@ class HttpRequest {
             Message.warning('请重新登录')
             console.log('请重新登录')
           }
-          self.location.href = '#/login'
-          // Vue.$router.push({ path: '/login' })
+          Cookies.set('token', '', { expires: cookieExpires || 1 })
+          self.location.href = document.domain
           return false
           // eslint-disable-next-line eqeqeq
         } else if (res.data.code == 2) {

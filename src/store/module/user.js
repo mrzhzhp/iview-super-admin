@@ -39,7 +39,7 @@ export default {
     },
     setToken (state, data) {
       state.token = data.token
-      setToken(data.token, data._this)
+      setToken(data.token)
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
@@ -76,14 +76,13 @@ export default {
     handleLogin ({ commit }, d) {
       let userName = d.userName.trim()
       let password = d.password
-      let _this = d._this
       return new Promise((resolve, reject) => {
         login({
           userName,
           password
         }).then(res => {
           const data = res.data
-          commit('setToken', { 'token': data.token, '_this': _this })
+          commit('setToken', { 'token': data.token })
           resolve()
         }).catch(err => {
           reject(err)
@@ -91,7 +90,7 @@ export default {
       })
     },
     // 退出登录
-    handleLogOut ({ state, commit }, _this) {
+    handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
         // logout(state.token).then(() => {
         //   commit('setToken', '')
@@ -104,7 +103,7 @@ export default {
         // commit('setToken', '')
         // commit('setAccess', [])
         // resolve()
-        commit('setToken', { 'token': '', '_this': _this })
+        commit('setToken', { 'token': '' })
         commit('setAccess', [])
         resolve()
       })
