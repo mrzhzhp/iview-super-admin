@@ -49,7 +49,7 @@ Vue.prototype.$config = config
 importDirective(Vue)
 Vue.directive('clickOutside', clickOutside)
 /**
- * 高德配置啊啊啊
+ * 高德配置
  */
 VueAMap.initAMapApiLoader({
   key: 'dc153389887127305fddc9c619034525',
