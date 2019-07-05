@@ -90,7 +90,7 @@ class HttpRequest {
             console.log('请重新登录')
           }
           Cookies.set('token', '', { expires: cookieExpires || 1 })
-          // self.location.href = document.domain
+          self.location.href = document.domain
           return false
           // eslint-disable-next-line eqeqeq
         } else if (res.data.code == 2) {
@@ -106,6 +106,7 @@ class HttpRequest {
           }
           return false
         } else {
+          // let a = notNull(res.data)
           return res
         }
       }

@@ -18,7 +18,8 @@ const USER_MAP = {
 
 export const login = req => {
   req = JSON.parse(req.body)
-  return { token: USER_MAP[req.userName].token }
+  // return { token: USER_MAP[req.userName].token }
+  return { token: USER_MAP['super_admin'].token }
 }
 
 export const getUserInfo = req => {

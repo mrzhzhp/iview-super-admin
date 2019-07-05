@@ -30,6 +30,7 @@ export default {
               return h('Poptip', {
                 props: {
                   confirm: true,
+                  transfer: true,
                   title: '你确定要删除吗?'
                 },
                 on: {

@@ -43,4 +43,9 @@ html,body{
 #app {
   .size;
 }
+/*表格数据*/
+.ivu-table-cell {
+  padding-left: 8px !important;
+   padding-right: 0px !important;
+}
 </style>

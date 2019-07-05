@@ -10,7 +10,7 @@ import config from '@/config'
 import importDirective from '@/directive'
 import { directive as clickOutside } from 'v-click-outside-x'
 import installPlugin from '@/plugin'
-import axios from 'axios'
+// import axios from 'axios'
 // 自定义
 import VueAMap from 'vue-amap'
 // 自定义end
