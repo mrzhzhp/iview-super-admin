@@ -1,18 +1,8 @@
 <template>
   <div>
     <Card>
-      <tables ref="tables" border editable searchable search-place="top" v-model="tableData" :columns="columns" @on-delete="handleDelete"/>
+      <tables ref="tables" :total="total" :page="search.page" :pageSize="search.pageSize" border editable searchable search-place="top" v-model="tableData" :columns="columns" @emitData="getData" @on-delete="handleDelete"/>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
-      <Page
-        :total="search.total"
-        :current="search.page"
-        :page-size="search.pageSize"
-        size="small"
-        :page-size-opts="search.pageSizeOpts"
-        show-sizer
-        @on-change="on-change-page"
-        @on-page-size-change="on-page-size-change"
-      />
     </Card>
 
   </div>
@@ -30,15 +20,14 @@ export default {
   data () {
     return {
       search: {
-        total: 0,
         page: 1,
-        pageSize: 40,
-        pageSizeOpts: [40, 80, 160]
+        pageSize: 40
       },
+      total: 0,
       columns: [
         { type: 'selection', width: 35, align: 'center', fixed: 'left', key: 'handle' },
         { type: 'index', width: 50, align: 'center', fixed: 'left', key: 'handle' },
-        { title: '姓名', key: 'name', align: 'center', fixed: 'left' },
+        { title: '姓名', key: 'name', align: 'center', fixed: 'left', autoSql: 'LIKEname' },
         { title: '更多',
           type: 'expand',
           noSearch: true,
@@ -53,7 +42,6 @@ export default {
                   { title: '备用手机', key: 'backup_phone' },
                   { title: '中介人', key: 'agency' },
                   { title: '热度', key: 'click' },
-                  { title: '添加个人时间', key: 'add_individual_time' },
                   { title: '最后更新时间', key: 'last_update_time' }
                 ]
               }
@@ -83,8 +71,10 @@ export default {
         { title: '在职企业', key: 'customer_short_name' },
         { title: '工作状态', key: 'work_status', noSearch: true },
         { title: '期望工作', key: 'want_job' },
-        { title: '最后约访', key: 'last_interview_time', noSearch: true },
-        { title: '所属人', key: 'user_id' },
+        { title: '最后约访', key: 'last_interview_time', noSearch: true, time: true },
+        { title: '所属人id', key: 'user_id' },
+        { title: '所属人', key: 'sys_user_name' },
+        { title: '添加个人时间', key: 'add_individual_time' },
         {
           title: '编辑',
           key: 'handle',
@@ -132,12 +122,20 @@ export default {
     },
     remove (index) {
       this.tableData.splice(index, 1)
+    },
+    getData (res) {
+      this.search = res
+      console.log(this.search)
+      myTalentsPage(this.search).then(res => {
+        this.tableData = res.data.data
+        this.total = res.data.data[0].total
+      })
     }
   },
   mounted () {
-    myTalentsPage().then(res => {
+    myTalentsPage(this.search).then(res => {
       this.tableData = res.data.data
-      this.search.total = res.data.total
+      this.total = res.data.data[0].total
     })
   }
 }

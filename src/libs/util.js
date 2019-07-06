@@ -408,11 +408,11 @@ export const setTitle = (routeItem, vm) => {
  */
 export const notNull = (data) => {
   let returnData
-  if (typeof data === 'object' && Object.prototype.toString.call(data) !== '[object Array]') {
+  if (Array.isArray(data)) {
+    returnData = data.length !== 0
+  } else if (data !== null && typeof data === 'object') {
     let aa = JSON.stringify(data)
     returnData = aa !== '{}'
-  } else if (Object.prototype.toString.call(data) === '[object Array]') {
-    returnData = data.length !== 0
   } else {
     if (data !== undefined && data != null && data !== '') {
       returnData = true
@@ -420,5 +420,22 @@ export const notNull = (data) => {
       returnData = false
     }
   }
+  return returnData
+}
+/**
+ * 自动转换sql格式化
+ * @param columns
+ * @param data
+ * @returns {*}
+ */
+export const autoSql = (columns, data) => {
+  let returnData = Object.assign({}, data)
+  for (let index in columns) {
+    if (columns[index].autoSql !== undefined) {
+      returnData[columns[index].autoSql] = data[columns[index].key]
+      delete returnData[columns[index].key]
+    }
+  };
+
   return returnData
 }

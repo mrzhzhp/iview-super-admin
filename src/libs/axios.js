@@ -54,12 +54,25 @@ class HttpRequest {
       if (!notNull(config.data)) {
         config['data'] = {}
       }
-      config.data.other = {
-        token: notNull(Cookies.get('token')) ? Cookies.get('token') : '',
-        loginType: 'web',
-        // ip: localStorage.getItem('Ip'),
-        device: window.navigator.userAgent
+      if (notNull(config.data.other)) {
+        config.data.other['token'] = notNull(Cookies.get('token')) ? Cookies.get('token') : ''
+        config.data.other['loginType'] = 'web'
+        config.data.other['device'] = window.navigator.userAgent
+      } else {
+        config.data.other = {
+          token: notNull(Cookies.get('token')) ? Cookies.get('token') : '',
+          loginType: 'web',
+          // ip: localStorage.getItem('Ip'),
+          device: window.navigator.userAgent
+        }
       }
+
+      // config.data.other['token'] = null
+      // config.data.other['loginType'] = null
+      // config.data.other['device'] = null
+      // config.data.other['token'] = notNull(Cookies.get('token')) ? Cookies.get('token') : ''
+      // config.data.other['loginType'] = 'web'
+      // config.data.other['device'] = window.navigator.userAgent
       // 添加全局的loading...
       if (!Object.keys(this.queue).length) {
         // Spin.show() // 不建议开启，因为界面不友好

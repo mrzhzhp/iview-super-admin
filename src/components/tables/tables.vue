@@ -5,7 +5,26 @@
         <Option v-for="item in columns" v-if="item.key !== 'handle' && !item.noSearch" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
       </Select>
       <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-      <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
+      <DatePicker
+        v-for="item in columns"
+        v-if="item.time"
+        :key="item.key"
+        type="daterange"
+        split-panels
+        :placeholder="item.title"
+        @on-change="onChangeTime"
+        @on-clear="onClearTime"
+        style="width: 200px;margin-left: 5px">
+      </DatePicker>
+      <Button @click="handleSearch" class="search-btn" type="primary" style="margin-right:10px"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
+      <Tag
+        v-for="(value, key, index)  in searchData"
+        v-if="value!=undefined && value && value!=='' && value!=null && key!='page' && key!='pageSize' && key!='other'"
+        :key="index"
+        closable
+        @on-close="handleClose(key)">
+        {{ value }}
+      </Tag>
     </div>
     <Table
       ref="tablesMain"
@@ -38,12 +57,22 @@
       <slot name="footer" slot="footer"></slot>
       <slot name="loading" slot="loading"></slot>
     </Table>
+    <Page
+      :total="total"
+      :current="searchData.page"
+      :page-size="searchData.pageSize"
+      size="small"
+      :page-size-opts="pageSizeOpts"
+      show-sizer
+      @on-change="onChangePage"
+      @on-page-size-change="onPageSizeChange"
+    />
     <div v-if="searchable && searchPlace === 'bottom'" class="search-con search-con-top">
       <Select v-model="searchKey" class="search-col">
         <Option v-for="item in columns" v-if="item.key !== 'handle' && !item.noSearch" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
       </Select>
-      <Input placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-      <Button class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
+      <Input @on-change="handleClear"  placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
+      <Button   @click="handleSearch"  class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <a id="hrefToExportTable" style="display: none;width: 0px;height: 0px;"></a>
   </div>
@@ -52,6 +81,7 @@
 <script>
 import TablesEdit from './edit.vue'
 import handleBtns from './handle-btns'
+import { notNull, autoSql } from '../../libs/util'
 import './index.less'
 export default {
   name: 'Tables',
@@ -113,6 +143,18 @@ export default {
       type: Boolean,
       default: false
     },
+    page: {
+      type: Number,
+      default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 40
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
     /**
      * @description 全局设置是否可编辑
      */
@@ -148,7 +190,11 @@ export default {
       edittingCellId: '',
       edittingText: '',
       searchValue: '',
-      searchKey: ''
+      searchKey: '',
+      searchData: {
+        other: []
+      },
+      pageSizeOpts: [40, 80, 160]
     }
   },
   methods: {
@@ -202,6 +248,7 @@ export default {
         let res = item
         if (res.editable) res = this.suportEdit(res, index)
         if (res.key === 'handle') res = this.surportHandle(res)
+        // console.log(res)
         return res
       })
     },
@@ -213,6 +260,18 @@ export default {
     },
     handleSearch () {
       this.insideTableData = this.value.filter(item => ('' + item[this.searchKey] + '').indexOf(this.searchValue) > -1)
+      if (this.searchKey !== 'handle') this.searchData[this.searchKey] = this.searchValue
+      this.searchData.page = 1
+      // this.searchValue = ''
+      this.$emit('emitData', autoSql(this.columns, this.searchData))
+    },
+    handleClose (key) {
+      console.log(key)
+      delete this.searchData[key]
+      this.searchData.page = 1
+      // this.searchValue = ''
+      this.insideTableData = this.value
+      this.$emit('emitData', autoSql(this.columns, this.searchData))
     },
     handleTableData () {
       this.insideTableData = this.value.map((item, index) => {
@@ -256,6 +315,31 @@ export default {
     },
     onExpand (row, status) {
       this.$emit('on-expand', row, status)
+    },
+    onClearTime () {
+      console.log('清除时间')
+    },
+    onChangeTime (res) {
+      for (let index in this.columns) {
+        if (this.columns[index].time) {
+          if (res[0] === '') {
+            delete this.searchData.other[this.columns[index].key]
+          } else {
+            this.searchData.other[this.columns[index].key] = res
+          }
+        }
+      };
+      console.log(res)
+    },
+    onChangePage (res) {
+      this.searchData.page = res
+      this.$emit('emitData', autoSql(this.columns, this.searchData))
+      console.log(res)
+    },
+    onPageSizeChange (res) {
+      this.searchData.pageSize = res
+      this.$emit('emitData', autoSql(this.columns, this.searchData))
+      console.log(res)
     }
   },
   watch: {
@@ -265,13 +349,15 @@ export default {
     },
     value (val) {
       this.handleTableData()
-      if (this.searchable) this.handleSearch()
+      // if (this.searchable) this.handleSearch()
     }
   },
   mounted () {
     this.handleColumns(this.columns)
     this.setDefaultSearchKey()
     this.handleTableData()
+    this.searchData.pageSize = this.pageSize
+    this.searchData.page = this.page
   }
 }
 </script>
