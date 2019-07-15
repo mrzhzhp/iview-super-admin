@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import { Message } from 'iview'
+import { Message,Spin } from 'iview'
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '../config'
@@ -43,39 +43,41 @@ class HttpRequest {
   destroy (url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
-      // Spin.hide()
+     Spin.hide()
     }
   }
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
-      console.log('发送')
-      console.log(config)
-      if (!notNull(config.data)) {
-        config['data'] = {}
-      }
-      if (notNull(config.data.other)) {
-        config.data.other['token'] = notNull(Cookies.get('token')) ? Cookies.get('token') : ''
-        config.data.other['loginType'] = 'web'
-        config.data.other['device'] = window.navigator.userAgent
+      console.log('发送', config)
+      if (notNull(config.data)) {
+        if (notNull(config.data.other)) {
+          config.data.other['token'] = notNull(Cookies.get('token')) ? Cookies.get('token') : ''
+          config.data.other['loginType'] = 'web'
+          config.data.other['device'] = window.navigator.userAgent
+        } else {
+          config.data.other = {
+            token: notNull(Cookies.get('token')) ? Cookies.get('token') : '',
+            loginType: 'web',
+            // ip: localStorage.getItem('Ip'),
+            device: window.navigator.userAgent
+          }
+        }
+        // config.data = JSON.stringify(config.data)
       } else {
-        config.data.other = {
-          token: notNull(Cookies.get('token')) ? Cookies.get('token') : '',
-          loginType: 'web',
-          // ip: localStorage.getItem('Ip'),
-          device: window.navigator.userAgent
+        config['data'] = {
+          other: {
+            token: notNull(Cookies.get('token')) ? Cookies.get('token') : '',
+            loginType: 'web',
+            // ip: localStorage.getItem('Ip'),
+            device: window.navigator.userAgent
+          }
         }
       }
 
-      // config.data.other['token'] = null
-      // config.data.other['loginType'] = null
-      // config.data.other['device'] = null
-      // config.data.other['token'] = notNull(Cookies.get('token')) ? Cookies.get('token') : ''
-      // config.data.other['loginType'] = 'web'
-      // config.data.other['device'] = window.navigator.userAgent
       // 添加全局的loading...
       if (!Object.keys(this.queue).length) {
-        // Spin.show() // 不建议开启，因为界面不友好
+        Spin.show() // 不建议开启，因为界面不友好
       }
       this.queue[url] = true
       return config

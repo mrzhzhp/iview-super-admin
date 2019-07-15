@@ -15,7 +15,7 @@ export default {
     userName: '',
     userId: '',
     avatarImgPath: '',
-    token: getToken(),
+    token: getToken() !== undefined ? getToken() : false,
     access: '',
     hasGetInfo: false,
     unreadCount: 0,
@@ -81,7 +81,7 @@ export default {
           userName,
           password
         }).then(res => {
-          const data = res.data
+          let data = res.data
           commit('setToken', { 'token': data.token })
           resolve()
         }).catch(err => {

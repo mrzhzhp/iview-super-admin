@@ -17,7 +17,7 @@ export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   // const token = store.state.user.token
   // console.log(token2)
-  if (token) return token
+  if (token && token !== undefined) return token
   else return false
 }
 
@@ -423,7 +423,7 @@ export const notNull = (data) => {
   return returnData
 }
 /**
- * 自动转换sql格式化
+ * 自动转换sql格式化,将MIN等去除
  * @param columns
  * @param data
  * @returns {*}
@@ -436,6 +436,20 @@ export const autoSql = (columns, data) => {
       delete returnData[columns[index].key]
     }
   };
+
+  return returnData
+}
+/**
+ * 将数组转换为字符串，
+ * @param data
+ * @returns {*}
+ */
+export const array_str = (data) => {
+  let returnData = ''
+  for (let index in data) {
+    returnData += data[index] + ','
+  }
+  returnData = returnData.substring(0, returnData.lastIndexOf(','))
 
   return returnData
 }

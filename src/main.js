@@ -13,6 +13,8 @@ import installPlugin from '@/plugin'
 // import axios from 'axios'
 // 自定义
 import VueAMap from 'vue-amap'
+// import VueAxios from 'axios'
+import qs from 'qs'
 // 自定义end
 import './index.less'
 import '@/assets/icons/iconfont.css'
@@ -43,6 +45,7 @@ Vue.config.productionTip = false
  * @description 全局注册应用配置
  */
 Vue.prototype.$config = config
+Vue.prototype.qs = qs //全局注册，使用方法为:this.qs
 
 /**
  * 注册指令

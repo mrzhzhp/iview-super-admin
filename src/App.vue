@@ -11,19 +11,19 @@ export default {
     // 在页面加载时读取localStorage里的状态信息
 
     if (
-      localStorage.getItem('store') !== null &&
-      localStorage.getItem('store') !== '' &&
-      localStorage.getItem('store') !== undefined
+      localStorage.getItem('store-ivew-admin') !== null &&
+      localStorage.getItem('store-ivew-admin') !== '' &&
+      localStorage.getItem('store-ivew-admin') !== undefined
     ) {
-      localStorage.getItem('store') && this.$store.replaceState(JSON.parse(localStorage.getItem('store')))
+      localStorage.getItem('store-ivew-admin') && this.$store.replaceState(JSON.parse(localStorage.getItem('store-ivew-admin')))
       // 获取到localStorage后清除，防止信息泄露
-      localStorage.removeItem('store')
+      localStorage.removeItem('store-ivew-admin')
     }
     // 在页面刷新时将vuex里的信息保存到localStorage里
     window.addEventListener('beforeunload', () => {
       // 写入前要清除，否则报错
-      localStorage.removeItem('store')
-      localStorage.setItem('store', JSON.stringify(this.$store.state))
+      localStorage.removeItem('store-ivew-admin')
+      localStorage.setItem('store-ivew-admin', JSON.stringify(this.$store.state))
     })
   }
 }

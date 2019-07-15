@@ -93,7 +93,7 @@
 <script>
 import TablesEdit from './edit.vue'
 import handleBtns from './handle-btns'
-import { autoSql } from '../../libs/util'
+import { autoSql } from '../../../libs/util'
 import './index.less'
 export default {
   name: 'Tables',

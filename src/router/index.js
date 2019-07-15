@@ -24,13 +24,13 @@ router.beforeEach((to, from, next) => {
   // 在页面加载时读取localStorage里的状态信息
 
   if (
-    localStorage.getItem('store') !== null &&
-    localStorage.getItem('store') !== '' &&
-    localStorage.getItem('store') !== undefined
+    localStorage.getItem('store-ivew-admin') !== null &&
+    localStorage.getItem('store-ivew-admin') !== '' &&
+    localStorage.getItem('store-ivew-admin') !== undefined
   ) {
-    localStorage.getItem('store') && store.replaceState(JSON.parse(localStorage.getItem('store')))
+    localStorage.getItem('store-ivew-admin') && store.replaceState(JSON.parse(localStorage.getItem('store-ivew-admin')))
     // 获取到localStorage后清除，防止信息泄露
-    localStorage.removeItem('store')
+    localStorage.removeItem('store-ivew-admin')
   }
   const token = getToken(store)
   if (!token && to.name !== LOGIN_PAGE_NAME) {
